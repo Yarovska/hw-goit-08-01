@@ -1,40 +1,67 @@
-import throttle from 'lodash.throttle';
-
-let formData = {};
-const STORAGE_KEY = 'feedback-form-state';
-
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  input: document.querySelector('.feedback-form input'),
-  textarea: document.querySelector('.feedback-form textarea'),
+const save = (key, value) => {
+  try {
+    const serializedState = JSON.stringify(value);
+    localStorage.setItem(key, serializedState);
+  } catch (error) {
+    console.error('Set state error: ', error.message);
+  }
 };
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.form.addEventListener('input', throttle(onFormInput, 500));
-
-refs.input.addEventListener('input', e => {
-  formData[e.target.name] = e.target.value;
-});
-
-populateFeedbackForm();
-
-function onFormSubmit(e) {
-  e.preventDefault();
-  console.log({ email: refs.input.value, message: refs.textarea.value });
-  e.currentTarget.reset();
-  localStorage.removeItem(STORAGE_KEY);
-}
-
-function onFormInput(e) {
-  formData[e.target.name] = e.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-}
-
-function populateFeedbackForm() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  if (data) {
-    formData = JSON.parse(data);
-    refs.input.value = formData.email;
-    refs.textarea.value = formData.message;
+const load = key => {
+  try {
+    const serializedState = localStorage.getItem(key);
+    return serializedState === null ? undefined : JSON.parse(serializedState);
+  } catch (error) {
+    console.error('Get state error: ', error.message);
   }
+};
+
+export default {
+  save,
+  load,
+};
+
+///////////////////////////////////////////////////////////////
+
+import throttle from 'lodash.throttle';
+const refs = {
+  form: document.querySelector('.feedback-form'),
+  emailInput: document.querySelector('input[name="email"]'),
+  messageInput: document.querySelector('textarea[name="message"]'),
+};
+
+const STORAGE_KEY = 'feedback-form-state';
+const formState = {};
+const onFormChange = throttle(() => {
+  (formState.email = refs.emailInput.value.trim()),
+    (formState.message = refs.messageInput.value.trim()),
+    //   console.log(formState);
+
+    save(STORAGE_KEY, formState);
+}, 500);
+
+refs.form.addEventListener('input', onFormChange);
+
+document.addEventListener('DOMContentLoaded', updateFormFields);
+
+function updateFormFields(event) {
+  const savedState = load(STORAGE_KEY);
+  if (savedState) {
+    refs.emailInput.value = savedState.email;
+    refs.messageInput.value = savedState.message;
+    formState.email = savedState.email; 
+    formState.message = savedState.message; 
+  }
+}
+
+refs.form.addEventListener('submit', onSubmitForm);
+
+function onSubmitForm(event) {
+  event.preventDefault();
+  load(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_KEY);
+  refs.emailInput.value = '';
+  refs.messageInput.value = '';
+
+  console.log(formState);
 }

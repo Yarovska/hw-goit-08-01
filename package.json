@@ -1,26 +1,28 @@
 {
-  "name": "parcel-project-template",
+  "name": "goit-js-hw-08",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://SergiyZatsarinniy.github.io/goit-js-hw-08",
+  "homepage": "https://SonGlad.github.io/goit-js-hw-08",
   "scripts": {
     "start": "parcel src/*.html",
     "build": "parcel build src/*.html --public-url /goit-js-hw-08/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/goitacademy/parcel-project-template.git"
+    "url": "git+https://github.com/SonGlad/goit-js-hw-08.git"
   },
   "keywords": [],
-  "author": "Alexander Repet <alexander.repeta@gmail.com>",
+  "author": "Alexander Repeta <alexander.repeta@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/goitacademy/parcel-project-template/issues"
+    "url": "https://github.com/SonGlad/goit-js-hw-08/issues"
   },
   "dependencies": {
     "@vimeo/player": "^2.19.0",
+    "install": "^0.13.0",
     "lodash.throttle": "^4.1.1",
     "modern-normalize": "^1.1.0",
+    "npm": "^9.6.7",
     "simplelightbox": "^2.14.0"
   },
   "devDependencies": {
